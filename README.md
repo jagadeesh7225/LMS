@@ -2,70 +2,13 @@
 
 This is a simple Leave Management System built using React + LocalStorage.
 It allows employees to apply for leave, view leave history, and lets the admin approve or reject leave requests.
-<<<<<<< HEAD
-
-=======
->>>>>>> 5abfd2d659c54a56f7127b891ab1e3933b728ca2
 The whole project runs completely on the browser with no backend required.
 
 ✨ Features
 👤 User Features
 
 Signup & Login
-<<<<<<< HEAD
 
-Apply for leave with date range
-
-Check remaining leave balance
-
-Prevents overlapping leave dates
-
-Shows total leave days before submitting
-
-View leave history
-
-Cancel pending leave requests
-
-Auto logout after 30 minutes
-
-🛠️ Admin Features
-
-View all leave requests
-
-Approve or reject requests
-
-Add remarks when rejecting
-
-Updates reflect instantly across pages
-
-Auto logout after 30 minutes
-
-📸 Screenshots
-🔹 Signup Page
-
-🔹 Login Page
-
-🔹 Forgot Password Popup
-
-🔹 Employee Dashboard
-
-🔹 Apply for Leave + Leave Balance
-
-🔹 Leave History – With Status (Approved/Rejected/Cancelled)
-
-🔹 Admin Panel – Approval & Rejection
-
-🔹 Admin Rejection Popup
-
-🔹 Updated Admin View After Action
-
-🚀 How to Run the Project
-
-Clone or download the project
-
-Install dependencies
-
-=======
 Apply for leave with date range
 Check remaining leave balance
 Prevents overlapping leave dates
@@ -80,7 +23,7 @@ Approve or reject requests
 Add remarks when rejecting
 Updates reflect instantly across pages
 Auto logout after 30 minutes
- 
+
 🔹 Signup Page
 <img width="901" height="700" alt="Screenshot 2025-11-18 205605" src="https://github.com/user-attachments/assets/9e1409cb-9745-4bda-90fa-4f3d76d9d3cd" />
 
@@ -125,54 +68,30 @@ Auto logout after 30 minutes
 Clone or download the project
 
 Install dependencies
->>>>>>> 5abfd2d659c54a56f7127b891ab1e3933b728ca2
 npm install
 
 
 Start the React app
-<<<<<<< HEAD
-
-npm run dev
-
-
-Open in browser:
-
-=======
 npm run dev
 
 Open in browser:
->>>>>>> 5abfd2d659c54a56f7127b891ab1e3933b728ca2
 http://localhost:5173/
 
 📂 Default Admin Credentials
 Role	Email	Password
 Admin	admin@lms.com
 	Admin@123
-<<<<<<< HEAD
-🔐 Session Timeout
 
-Both Admin and User are automatically logged out after 30 minutes of activity.
-
-📝 Notes
-
-All data is stored in localStorage (no backend).
-
-Leave balance updates only when a leave is approved.
-
-Cancelled leaves remain in history with proper status and remark.
-
-=======
-  
 🔐 Session Timeout
 Both Admin and User are automatically logged out after 30 minutes of activity.
 
 📝 Notes
+
 All data is stored in localStorage (no backend).
 Leave balance updates only when a leave is approved.
 Cancelled leaves remain in history with proper status and remark.
 
 📁 Project Folder Structure
->>>>>>> 5abfd2d659c54a56f7127b891ab1e3933b728ca2
 lms/
 ├── public/
 │   └── index.html
@@ -207,8 +126,6 @@ lms/
 ├── package.json
 ├── vite.config.js
 └── README.md
-<<<<<<< HEAD
-=======
 
 📘 What Each Folder Contains
 components/
@@ -230,4 +147,3 @@ Saving & loading from localStorage
 
 utils/
 Small helper functions like date formatting.
->>>>>>> 5abfd2d659c54a56f7127b891ab1e3933b728ca2
