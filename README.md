@@ -8,7 +8,6 @@ The whole project runs completely on the browser with no backend required.
 👤 User Features
 
 Signup & Login
-
 Apply for leave with date range
 Check remaining leave balance
 Prevents overlapping leave dates
@@ -147,3 +146,93 @@ Saving & loading from localStorage
 
 utils/
 Small helper functions like date formatting.
+
+⭐ Features
+🔐 Authentication
+JWT-based login
+Admin & User roles
+Middleware-protected routes
+
+📝 Leave Management
+Apply leave
+Prevent overlapping leave
+Cancel leave (user)
+Approve / Reject leave (admin)
+Remarks & timestamps
+
+⚙️ System
+Auto session handling (30 min expiry)
+Clean data models (User & Leave)
+Secure password hashing (bcrypt)
+
+🛠 Tech Stack
+Node.js
+Express.js
+MongoDB + Mongoose
+JWT (jsonwebtoken)
+bcryptjs
+dotenv
+
+backend/
+ ├── config/
+ │   └── db.js
+ ├── controllers/
+ │   ├── authController.js
+ │   └── leaveController.js
+ ├── middleware/
+ │   └── authMiddleware.js
+ ├── models/
+ │   ├── User.js
+ │   └── Leave.js
+ ├── routes/
+ │   ├── authRoutes.js
+ │   └── leaveRoutes.js
+ ├── server.js
+ ├── package.json
+
+📥 Installation
+cd backend
+npm install
+
+▶️ Running the Server
+Development mode:
+npm run dev
+
+Or normal:
+node server.js
+
+Server runs at:
+http://localhost:5000
+
+🔗 API Routes Overview
+Auth Routes (/api/auth)
+Method	 Endpoint	 Description
+POST	 /signup	     Register a new user
+POST	 /login	     Login & get JWT
+
+Leave Routes (/api/leaves)
+Method 	  Endpoint	        Description
+POST	  /apply	       Apply for leave
+GET	      /my	           Get user's leaves
+GET	     /all	           Admin: view all leaves
+PUT	     /status/:id	   Admin: approve/reject
+PUT	    /cancel/:id        User: cancel leave
+
+🔐 Security Practices
+JWT authentication on protected routes
+Password hashing using bcrypt
+Role-based access (admin/user)
+Input validation (manual + model layer)
+
+🚫 Error Handling
+All controllers wrapped in try-catch
+Consistent API response format
+Meaningful error messages
+Token expiration handling
+
+📈 Future Enhancements
+Email notifications
+OTP-based password reset
+Admin dashboard reports
+Role-based user management
+Leave type categories
