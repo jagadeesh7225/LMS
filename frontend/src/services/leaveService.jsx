@@ -8,9 +8,7 @@ const authHeaders = () => ({
   Authorization: `Bearer ${getToken()}`,
 });
 
-/* ---------------------------------------------------
-   AUTH
---------------------------------------------------- */
+   //AUTH
 export const loginUser = async (email, password) => {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
@@ -31,9 +29,7 @@ export const signupUser = async (body) => {
   return await res.json();
 };
 
-/* ---------------------------------------------------
-   BROADCAST UPDATE TO ALL WINDOWS
---------------------------------------------------- */
+   //BROADCAST UPDATE TO ALL WINDOWS
 const broadcastUpdate = () => {
   window.dispatchEvent(new Event("leaveUpdated"));
   try {
@@ -43,9 +39,8 @@ const broadcastUpdate = () => {
   } catch {}
 };
 
-/* ---------------------------------------------------
-   LEAVES
---------------------------------------------------- */
+
+   //LEAVES
 export const applyLeave = async (data) => {
   const res = await fetch(`${API_URL}/leaves/apply`, {
     method: "POST",
@@ -78,9 +73,7 @@ export const cancelLeave = async (id) => {
   return json;
 };
 
-/* ---------------------------------------------------
-   ADMIN
---------------------------------------------------- */
+  // ADMIN
 export const getAllLeavesAdmin = async () => {
   const res = await fetch(`${API_URL}/leaves/admin/all`, {
     method: "GET",
@@ -102,9 +95,8 @@ export const updateLeaveStatus = async (id, status, remark = "") => {
   return json;
 };
 
-/* ---------------------------------------------------
-   BALANCE
---------------------------------------------------- */
+
+  // BALANCE
 export const getLeaveBalance = async () => {
   const leaves = await getLeaveHistory();
   let used = 0;
