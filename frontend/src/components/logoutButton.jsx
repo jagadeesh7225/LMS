@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 export default function LogoutButton() {
   const navigate = useNavigate();
 
+  // clears user session and redirects to login page
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("loginTime");
+    localStorage.removeItem("token");      // remove auth token
+    localStorage.removeItem("user");       // remove stored user data
+    localStorage.removeItem("loginTime");  // remove login timer info
 
-    navigate("/");
+    navigate("/"); // send user back to login/home page
   };
 
   return (
