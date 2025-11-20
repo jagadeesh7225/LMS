@@ -2,10 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
-  console.log("LoginPage loaded"); // Debug log
+  console.log("LoginPage loaded"); // debug log
 
+  // login form fields
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // forgot password modal state
   const [showForgotBox, setShowForgotBox] = useState(false);
   const [fpEmail, setFpEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -19,12 +22,14 @@ function LoginPage() {
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
 
+    // simple input checks
     if (!trimmedEmail || !trimmedPassword) {
       alert("Enter email and password");
       return;
     }
 
     try {
+      // API call to backend login route
       const res = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -34,21 +39,22 @@ function LoginPage() {
       const data = await res.json();
       console.log("Login response:", data);
 
+      // if backend returns failure
       if (!data.success) {
         alert(data.message || "Invalid credentials!");
         return;
       }
 
-      // Store token
+      // save token to localStorage
       localStorage.setItem("token", data.token);
 
-      // Decode user from token
+      // extract user details from token
       const payload = JSON.parse(atob(data.token.split(".")[1]));
       localStorage.setItem("user", JSON.stringify(payload));
 
       console.log("Decoded user:", payload);
 
-      // Redirect
+      // redirect based on role
       if (payload.role === "admin") navigate("/admin");
       else navigate("/dashboard");
 
@@ -58,7 +64,7 @@ function LoginPage() {
     }
   };
 
-  // UPDATE PASSWORD (LOCAL)
+  //  UPDATE PASSWORD (LOCAL ONLY) 
   const updatePassword = () => {
     const trimmedFpEmail = fpEmail.trim();
     const trimmedNewPassword = newPassword.trim();
@@ -67,14 +73,20 @@ function LoginPage() {
     if (trimmedNewPassword.length < 4)
       return alert("Password must be at least 4 characters.");
 
+    // get stored users (mock data)
     const users = JSON.parse(localStorage.getItem("users") || "[]");
+
+    // find user by email
     const index = users.findIndex((u) => u.email === trimmedFpEmail);
     if (index === -1) return alert("Email not found");
 
+    // update their password
     users[index].password = trimmedNewPassword;
     localStorage.setItem("users", JSON.stringify(users));
 
     alert("Password updated!");
+
+    // reset fields
     setFpEmail("");
     setNewPassword("");
     setShowForgotBox(false);
@@ -83,15 +95,16 @@ function LoginPage() {
   return (
     <div
       onSubmit={(e) => {
-        e.preventDefault();
-        console.log("❌ Blocked implicit form submit");
+        e.preventDefault(); // prevents accidental form submit
+        console.log(" Blocked implicit form submit");
       }}
     >
+      {/* Main Login Screen */}
       <div className="min-h-screen flex justify-center items-center bg-purple-200">
         <div className="bg-white p-8 rounded-xl w-80 shadow-lg">
           <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
 
-          {/* Email */}
+          {/* Email input */}
           <input
             type="email"
             placeholder="Enter email"
@@ -100,7 +113,7 @@ function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          {/* Password */}
+          {/* Password input */}
           <input
             type="password"
             placeholder="Enter password"
@@ -109,6 +122,7 @@ function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
+          {/* Login button */}
           <button
             type="button"
             onClick={() => {
@@ -120,6 +134,7 @@ function LoginPage() {
             Login
           </button>
 
+          {/* Forgot password link */}
           <p
             className="text-sm text-blue-700 text-center mt-3 cursor-pointer underline"
             onClick={() => setShowForgotBox(true)}
@@ -127,6 +142,7 @@ function LoginPage() {
             Forgot Password?
           </p>
 
+          {/* Signup link */}
           <p className="text-xs text-gray-500 mt-4 text-center">
             Don’t have an account?{" "}
             <span
@@ -137,6 +153,7 @@ function LoginPage() {
             </span>
           </p>
 
+          {/* Demo admin login block */}
           <div className="mt-4 p-3 bg-gray-100 rounded-lg border border-gray-300 text-center">
             <p className="text-sm font-semibold">Admin Login</p>
             <p className="text-xs">admin@lms.com</p>
@@ -145,7 +162,7 @@ function LoginPage() {
         </div>
       </div>
 
-      {/* Forgot Password Box */}
+      {/* FORGOT PASSWORD MODAL */}
       {showForgotBox && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-xl w-80 shadow-xl">
@@ -153,6 +170,7 @@ function LoginPage() {
               Reset Password
             </h3>
 
+            {/* Email for forgot password */}
             <input
               type="email"
               placeholder="Enter your email"
@@ -161,6 +179,7 @@ function LoginPage() {
               onChange={(e) => setFpEmail(e.target.value)}
             />
 
+            {/* New password */}
             <input
               type="password"
               placeholder="Enter new password"
@@ -169,6 +188,7 @@ function LoginPage() {
               onChange={(e) => setNewPassword(e.target.value)}
             />
 
+            {/* Submit password update */}
             <button
               type="button"
               onClick={updatePassword}
@@ -177,6 +197,7 @@ function LoginPage() {
               Update Password
             </button>
 
+            {/* Close modal */}
             <button
               type="button"
               onClick={() => setShowForgotBox(false)}
