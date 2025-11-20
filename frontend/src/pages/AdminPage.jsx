@@ -4,28 +4,34 @@ import { getAllLeavesAdmin, updateLeaveStatus } from "../services/leaveService";
 import LogoutButton from "../components/logoutButton";
 
 function AdminPage() {
+  // store all leave requests
   const [leaveData, setLeaveData] = useState([]);
+
+  // for rejection modal
   const [remarkBox, setRemarkBox] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const [remark, setRemark] = useState("");
 
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(0); // session countdown
 
+  // fetch all leaves for admin
   const loadLeaves = async () => {
     const data = await getAllLeavesAdmin();
     setLeaveData(data);
   };
 
-  /* SESSION TIMER */
+  /*SESSION TIMER*/
   useEffect(() => {
     const loginTime = Number(localStorage.getItem("loginTime")) || Date.now();
-    const sessionLimit = 30 * 60 * 1000;
+    const sessionLimit = 30 * 60 * 1000; // 30 minutes
 
+    // updates countdown every second
     const update = () => {
       const remaining = sessionLimit - (Date.now() - loginTime);
       setTimeLeft(remaining);
 
+      // auto-logout on timeout
       if (remaining <= 0) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -33,49 +39,60 @@ function AdminPage() {
       }
     };
 
-    update();
+    update(); // run once immediately
     const interval = setInterval(update, 1000);
+
     return () => clearInterval(interval);
   }, []);
 
   /* LOAD & LIVE UPDATE */
   useEffect(() => {
+    // redirect if user isn't admin
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     if (user.role !== "admin") navigate("/");
 
-    loadLeaves();
+    loadLeaves(); // initial fetch
 
+    // reload data when leave updates elsewhere
     const onUpdate = () => loadLeaves();
     window.addEventListener("leaveUpdated", onUpdate);
 
+    // sync across multiple browser tabs
     let ch;
     try {
       ch = new BroadcastChannel("lms_sync");
       ch.onmessage = onUpdate;
     } catch {}
 
+    // cleanup
     return () => {
       window.removeEventListener("leaveUpdated", onUpdate);
       if (ch) ch.close();
     };
   }, []);
 
+  // approve leave instantly (no remark)
   const approve = async (id) => {
     await updateLeaveStatus(id, "Approved", "");
   };
 
+  // reject leave with remark
   const reject = async () => {
     if (!remark.trim()) return alert("Remark required");
+
     await updateLeaveStatus(currentId, "Rejected", remark);
+
     setRemark("");
     setRemarkBox(false);
   };
 
+  // time formatting: mm:ss
   const mm = String(Math.floor(timeLeft / 1000 / 60)).padStart(2, "0");
   const ss = String(Math.floor((timeLeft / 1000) % 60)).padStart(2, "0");
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
+      {/* Header: Title + logout + timer */}
       <div className="flex justify-between mb-6">
         <h1 className="text-3xl font-bold">Admin Panel</h1>
 
@@ -85,6 +102,7 @@ function AdminPage() {
         </div>
       </div>
 
+      {/* Leave request table */}
       <div className="bg-white p-6 rounded-xl shadow-xl overflow-x-auto">
         <table className="w-full border text-center min-w-max">
           <thead>
@@ -115,6 +133,7 @@ function AdminPage() {
                   <td className="border p-2">{item.days}</td>
                   <td className="border p-2">{item.reason}</td>
 
+                  {/* Status badge */}
                   <td className="border p-2">
                     <span
                       className={`px-3 py-1 rounded text-white ${
@@ -124,13 +143,14 @@ function AdminPage() {
                           ? "bg-red-500"
                           : item.status === "Cancelled"
                           ? "bg-gray-500"
-                          : "bg-yellow-500"
+                          : "bg-yellow-500" // Pending
                       }`}
                     >
                       {item.status}
                     </span>
                   </td>
 
+                  {/* Approve / Reject buttons */}
                   <td className="border p-2">
                     <button
                       disabled={!isPending}
@@ -144,8 +164,8 @@ function AdminPage() {
                       disabled={!isPending}
                       className="bg-red-600 text-white px-3 py-1 rounded"
                       onClick={() => {
-                        setCurrentId(item._id);
-                        setRemarkBox(true);
+                        setCurrentId(item._id); // store active id
+                        setRemarkBox(true);     // open modal
                       }}
                     >
                       Reject
@@ -158,6 +178,7 @@ function AdminPage() {
         </table>
       </div>
 
+      {/* Rejection popup */}
       {remarkBox && (
         <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
           <div className="bg-white p-6 rounded-xl w-96">
@@ -178,7 +199,7 @@ function AdminPage() {
 
             <button
               className="w-full bg-gray-500 text-white py-2 rounded"
-              onClick={() => setRemarkBox(false)}
+              onClick={() => setRemarkBox(false)} // close modal
             >
               Cancel
             </button>
