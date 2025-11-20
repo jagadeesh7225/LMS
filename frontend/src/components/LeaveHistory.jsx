@@ -2,25 +2,30 @@ import { useEffect, useState } from "react";
 import { getLeaveHistory, cancelLeave } from "../services/leaveService";
 
 function LeaveHistory() {
+  // store all previous leave records
   const [history, setHistory] = useState([]);
 
+  // loads leave history from backend
   const loadHistory = async () => {
     const data = await getLeaveHistory();
-    setHistory([...data]);
+    setHistory([...data]); // update table data
   };
 
   useEffect(() => {
+    // load history when component loads
     loadHistory();
 
+    // whenever a leave is applied or cancelled, refresh this component
     const onUpdate = () => loadHistory();
     window.addEventListener("leaveUpdated", onUpdate);
 
+    // cleanup on unmount
     return () => window.removeEventListener("leaveUpdated", onUpdate);
   }, []);
 
+  // cancel request handler
   const cancelRequest = async (id) => {
-    if (!confirm("Are you sure you want to cancel this leave request?"))
-      return;
+    if (!confirm("Are you sure you want to cancel this leave request?")) return;
 
     const res = await cancelLeave(id);
 
@@ -29,7 +34,10 @@ function LeaveHistory() {
       return;
     }
 
+    // reload history after cancel
     loadHistory();
+
+    // notify other pages to refresh
     window.dispatchEvent(new Event("leaveUpdated"));
   };
 
@@ -50,6 +58,7 @@ function LeaveHistory() {
         </thead>
 
         <tbody>
+          {/* if no leave history exists */}
           {history.length === 0 ? (
             <tr>
               <td colSpan="6" className="text-gray-500 py-4">
@@ -57,6 +66,7 @@ function LeaveHistory() {
               </td>
             </tr>
           ) : (
+            // show history table rows
             history.map((item) => (
               <tr key={item._id}>
                 <td className="border p-2">{item.fromDate}</td>
@@ -66,6 +76,7 @@ function LeaveHistory() {
 
                 <td className="border p-2">
                   <div className="flex flex-col items-center">
+                    {/* status badge with colors */}
                     <span
                       className={`px-3 py-1 rounded text-white ${
                         item.status === "Approved"
@@ -74,12 +85,13 @@ function LeaveHistory() {
                           ? "bg-red-500"
                           : item.status === "Cancelled"
                           ? "bg-gray-500"
-                          : "bg-yellow-500"
+                          : "bg-yellow-500" // Pending
                       }`}
                     >
                       {item.status}
                     </span>
 
+                    {/* remark from admin (optional) */}
                     {item.remark && (
                       <span className="text-xs text-gray-600 mt-1 italic">
                         {item.remark}
@@ -89,6 +101,7 @@ function LeaveHistory() {
                 </td>
 
                 <td className="border p-2">
+                  {/* allow cancel only for pending requests */}
                   {item.status === "Pending" ? (
                     <button
                       onClick={() => cancelRequest(item._id)}
@@ -108,5 +121,4 @@ function LeaveHistory() {
     </div>
   );
 }
-
 export default LeaveHistory;
