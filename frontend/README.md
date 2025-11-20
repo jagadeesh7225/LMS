@@ -1,3 +1,5 @@
+///***///NOTE:- FOR APPROVE/REJECT OF EMPLOYEE LEAVE YOU HAVE APPROVE/REJECT IN ADMIN DASHBOARD///***///
+
 📘 Leave Management System (LMS)
 
 This is a simple Leave Management System built using React + LocalStorage. It allows employees to apply for leave, view leave history, and lets the admin approve or reject leave requests. The whole project runs completely on the browser with no backend required.
